@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - HimRugs</title>
+    <link rel="icon" type="image/png" href="Images/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Gurmukhi:wght@400;700&family=Noto+Serif+Devanagari:wght@400;700&family=Georgia:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="glass-nav">
+        <div class="container">
+            <div class="logo">
+                <img src="Images/logo.png" alt="HimRugs Logo">
+                <span>HimRugs Admin</span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
+                </ul>
+                <div class="mobile-menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Admin Dashboard Container -->
+    <main class="admin-main">
+        <div class="container">
+            <!-- Section Title -->
+            <div class="dashboard-header">
+                <h1>Admin Dashboard</h1>
+                <p>Manage customer requests and messages</p>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+
+                <!-- Requests and Messages Form Panel -->
+                <div class="form-panel">
+                    <!-- Tabs for switching between forms -->
+                    <div class="form-tabs">
+                        <button class="tab-btn active" data-tab="custom-design">Request a Custom Design</button>
+                        <button class="tab-btn" data-tab="send-message">Send a Message</button>
+                    </div>
+
+                    <!-- Custom Design Request Form -->
+                    <form id="customDesignForm" class="form-content active" data-form="custom-design">
+                        <h2>Request a Custom Design</h2>
+                        
+                        <div class="form-group">
+                            <label for="design-fullname">Full Name *</label>
+                            <input 
+                                type="text" 
+                                id="design-fullname" 
+                                name="fullname" 
+                                placeholder="Enter your full name" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="design-contact">Contact Number *</label>
+                            <input 
+                                type="tel" 
+                                id="design-contact" 
+                                name="contact" 
+                                placeholder="Enter your contact number" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="design-email">Email ID *</label>
+                            <input 
+                                type="email" 
+                                id="design-email" 
+                                name="email" 
+                                placeholder="Enter your email address" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="design-address">Full Address *</label>
+                            <textarea 
+                                id="design-address" 
+                                name="address" 
+                                placeholder="Enter your full address" 
+                                rows="3"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Send Request</button>
+                    </form>
+
+                    <!-- Send Message Form -->
+                    <form id="sendMessageForm" class="form-content" data-form="send-message">
+                        <h2>Send a Message</h2>
+                        
+                        <div class="form-group">
+                            <label for="msg-fullname">Full Name *</label>
+                            <input 
+                                type="text" 
+                                id="msg-fullname" 
+                                name="fullname" 
+                                placeholder="Enter your full name" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="msg-contact">Contact Number *</label>
+                            <input 
+                                type="tel" 
+                                id="msg-contact" 
+                                name="contact" 
+                                placeholder="Enter your contact number" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="msg-email">Email ID *</label>
+                            <input 
+                                type="email" 
+                                id="msg-email" 
+                                name="email" 
+                                placeholder="Enter your email address" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="msg-text">Message *</label>
+                            <textarea 
+                                id="msg-text" 
+                                name="message" 
+                                placeholder="Enter your message here" 
+                                rows="4"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Send Message</button>
+                    </form>
+                </div>
+
+                <!-- Customer Requests Display Panel -->
+                <div class="data-panel">
+                    <div class="data-header">
+                        <h2>Customer Requests</h2>
+                        <div class="search-bar">
+                            <input type="text" id="searchInput" placeholder="🔍 Search by name, email, or contact..." class="search-input">
+                        </div>
+                        <div class="header-controls">
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" data-filter="all">All</button>
+                                <button class="filter-btn" data-filter="design">Design Requests</button>
+                                <button class="filter-btn" data-filter="message">Messages</button>
+                            </div>
+                            <div class="action-buttons">
+                                <button id="exportCSVBtn" class="btn-export">📥 Export CSV</button>
+                                <button id="clearAllBtn" class="btn-clear-all">🗑️ Clear All</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="requests-container" id="requestsContainer">
+                        <!-- Requests will be dynamically added here -->
+                        <div class="empty-state">
+                            <p class="empty-icon">📋</p>
+                            <p class="empty-text">No requests yet</p>
+                            <p class="empty-subtext">Customer requests will appear here</p>
+                        </div>
+                    </div>
+                    <div id="confirmDialog" class="confirm-dialog hidden">
+                        <div class="confirm-content">
+                            <p id="confirmMessage"></p>
+                            <div class="confirm-buttons">
+                                <button id="confirmYes" class="btn-confirm-yes">Yes, Delete</button>
+                                <button id="confirmNo" class="btn-confirm-no">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Statistics Section -->
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalStats">0</div>
+                    <div class="stat-label">Total Requests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="designStats">0</div>
+                    <div class="stat-label">Design Requests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="messageStats">0</div>
+                    <div class="stat-label">Messages</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 HimRugs. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/admin-dashboard.js"></script>
+
+</body>
+</html>
