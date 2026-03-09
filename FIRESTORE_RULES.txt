@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ==========================================
+    // CUSTOMER REQUESTS COLLECTION
+    // ==========================================
+    match /customerRequests/{document=**} {
+      
+      // ALLOW: Everyone can read all customer requests
+      // (For Admin Dashboard to display data)
+      allow read: if true;
+      
+      // ALLOW: Anyone can create new requests
+      // But only with required fields
+      allow create: if request.resource.data.fullname != null
+        && request.resource.data.contact != null
+        && request.resource.data.email != null
+        && request.resource.data.timestamp != null
+        && (request.resource.data.type == "design" || request.resource.data.type == "message")
+        && (request.resource.data.type == "design" ? request.resource.data.address != null : request.resource.data.message != null);
+      
+      // ALLOW: Update requests (for marking as resolved)
+      // Only allow updating the status field
+      allow update: if request.resource.data.status != null
+        && (request.resource.data.status == "resolved" || request.resource.data.status == "new");
+      
+      // ALLOW: Delete requests (for admin dashboard)
+      allow delete: if true;
+    }
+    
+    // ==========================================
+    // Default: DENY ALL
+    // ==========================================
+    // Deny access to any other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
