@@ -1,9 +1,17 @@
 /* 
-    HimRugs - Interactive Logic
-    Features: Welcome Screen, Live Timer, Form Handling, Animations
+    HimRugs - Complete App Logic
+    Features: Firebase Integration, Forms, Welcome Screen, Timer, Animations
 */
 
+import { 
+    submitDesignRequest, 
+    isValidEmail 
+} from './firebase-utils.js';
+
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // Initialize form handlers (index.html and contact.html)
+    initFormSubmission();
     
     // 1. Welcome Screen Logic
     const welcomeScreen = document.getElementById('welcome-screen');
@@ -130,17 +138,50 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateTimer, 1000);
     updateTimer();
 
-    // 3. Form Submission & Popup
+    // 3. Form Submission to Firebase (index.html and contact.html)
     const requestForm = document.getElementById('rug-request-form');
     const successPopup = document.getElementById('success-popup');
     const closePopup = document.querySelector('.close-popup');
 
     if (requestForm) {
-        requestForm.addEventListener('submit', (e) => {
+        requestForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            // Show animated popup
-            successPopup.style.display = 'flex';
-            requestForm.reset();
+            
+            const name = requestForm.querySelector('[name="name"]')?.value.trim() || '';
+            const contact = requestForm.querySelector('[name="contact"]')?.value.trim() || '';
+            const email = requestForm.querySelector('[name="email"]')?.value.trim() || '';
+            const address = requestForm.querySelector('[name="address"]')?.value.trim() || '';
+            
+            // Validate
+            if (!name || !contact || !email || !address) {
+                showFormAlert('❌ Please fill all required fields', 'error', requestForm);
+                return;
+            }
+            
+            // Validate email
+            if (!isValidEmail(email)) {
+                showFormAlert('❌ Please enter a valid email address', 'error', requestForm);
+                return;
+            }
+            
+            try {
+                // Submit to Firebase
+                await submitDesignRequest(name, contact, email, address);
+                
+                // Show success popup
+                if (successPopup) {
+                    successPopup.style.display = 'flex';
+                }
+                
+                // Reset form
+                requestForm.reset();
+                
+                // Log success
+                console.log('✅ Request submitted successfully');
+            } catch (error) {
+                console.error('Form submission error:', error);
+                showFormAlert('❌ ' + error.message, 'error', requestForm);
+            }
         });
     }
 
@@ -274,3 +315,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     observer_menu.observe(navLinks, { attributes: true, attributeFilter: ['class'] });
 });
+
+// ========== FORM UTILITIES ==========
+function showFormAlert(message, type = 'success', form) {
+    const alertDiv = document.createElement('div');
+    
+    if (type === 'success') {
+        alertDiv.style.cssText = `
+            background: #d1fae5;
+            border: 2px solid #6ee7b7;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            animation: slideIn 0.3s ease;
+        `;
+    } else {
+        alertDiv.style.cssText = `
+            background: #fee2e2;
+            border: 2px solid #fca5a5;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            animation: slideIn 0.3s ease;
+        `;
+    }
+    
+    alertDiv.textContent = message;
+    
+    if (form) {
+        form.parentNode.insertBefore(alertDiv, form);
+    }
+    
+    setTimeout(() => alertDiv.remove(), 5000);
+}
+
+// Initialize form submission (called from DOMContentLoaded)
+function initFormSubmission() {
+    // This function is called early to setup form handlers
+    // Actual form handling is done in the DOMContentLoaded event
+    console.log('✅ Form submission initialized');
+}
+
+console.log('%c✅ HimRugs App Ready!', 'color: green; font-weight: bold; font-size: 14px;');
